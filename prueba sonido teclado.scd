@@ -1,7 +1,7 @@
 s.boot;
 
 (
-SynthDef(\mobiusVoice, {|freq= 440, amp=0.2,pan=0, cutoff=4186, gate=1|
+SynthDef(\mobiusVoice, {|freq= 440, amp=0.2,pan=0, cutoff=493.88, gate=1|
   var sig, env;
 	env=EnvGen.kr(Env.asr(0.05,1,0.3),gate,doneAction: 2);
 	sig = SinOsc.ar(freq) + (0.15 * SinOsc.ar(freq * 2)) + (0.05 * SinOsc.ar(freq * 3));
@@ -10,7 +10,7 @@ SynthDef(\mobiusVoice, {|freq= 440, amp=0.2,pan=0, cutoff=4186, gate=1|
 	Out.ar(0,sig);
 }).add;
 
-SynthDef(\mobiusGrain, { |freq = 493, amp = 0.15, pan = 0, cutoff = 4186, dur = 0.15|
+SynthDef(\mobiusGrain, { |freq = 493, amp = 0.15, pan = 0, cutoff = 493.88, dur = 0.15|
     var sig, env;
     env = EnvGen.kr(Env.perc(0.01, dur), doneAction: 2);
     sig = SinOsc.ar(freq) * env;
