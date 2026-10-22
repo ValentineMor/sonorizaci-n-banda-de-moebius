@@ -3,18 +3,18 @@ s.boot;
 (
 SynthDef(\mobiusVoice, {|freq= 440, amp=0.2,pan=0, cutoff=4186, gate=1|
   var sig, env;
-	env= EnvGen.kr(Env.asr(0.05,1,0.3),gate,doneAction: 2);
+	env=EnvGen.kr(Env.asr(0.05,1,0.3),gate,doneAction: 2);
 	sig = SinOsc.ar(freq) + (0.15 * SinOsc.ar(freq * 2)) + (0.05 * SinOsc.ar(freq * 3));
-	sig=RLPF.ar(sig, cutoff.clip(27.5,440),0.3);
+	sig=RLPF.ar(sig, cutoff.clip(261.62,493.88),0.3);
 	sig=Pan2.ar(sig,pan.clip(-1,1),amp * env);
 	Out.ar(0,sig);
 }).add;
 
-SynthDef(\mobiusGrain, { |freq = 440, amp = 0.15, pan = 0, cutoff = 4186, dur = 0.15|
+SynthDef(\mobiusGrain, { |freq = 493, amp = 0.15, pan = 0, cutoff = 4186, dur = 0.15|
     var sig, env;
     env = EnvGen.kr(Env.perc(0.01, dur), doneAction: 2);
     sig = SinOsc.ar(freq) * env;
-    sig = RLPF.ar(sig, cutoff.clip(27.5, 4186), 0.4);
+    sig = RLPF.ar(sig, cutoff.clip(261.62, 493.88), 0.4);
     sig = Pan2.ar(sig, pan.clip(-1, 1), amp);
     Out.ar(0, sig);
 }).add;
@@ -44,7 +44,7 @@ var x,y,z;
 (
 ~mobiusEdgeRoutine = Routine({
 	var prevPt;
-    var steps = 1200, dur = 0.04, u, pt, freq, pan, cutoff, amp;
+    var steps = 1200, dur = 0.08, u, pt, freq, pan, cutoff, amp;
     var synth = Synth(\mobiusVoice);
 
 
@@ -53,14 +53,14 @@ var x,y,z;
         pt = ~mobiusPoint.(u, 1);
 		if (prevPt.notNil) {
 			var delta = (pt -prevPt).abs.sum;
-			cutoff= delta.linlin(0, 0.1,300,6000);
+			cutoff= delta.linlin(0, 0.1,261.62, 493.88);
 	};
 		prevPt =pt;
 
         freq = pt[2].linlin(-0.5, 0.5, 200,1200)
              + pt[0].linlin(-1.5, 1.5, 0, 50);
         pan = pt[1].clip(-1, 1);
-        cutoff = pt[0].linlin(-1.5, 1.5, 400, 4000);
+        cutoff = pt[0].linlin(-1.5, 1.5,261.62, 493.88);
         amp = 0.25;
 		freq = ~quantize.(freq);
 		freq = Lag.kr(freq, 0.05);
