@@ -1,5 +1,4 @@
 s.boot;
-
 (
 s.waitForBoot {
 
@@ -14,7 +13,8 @@ s.waitForBoot {
             + (0.05 * SinOsc.ar(freq * 3));
         sig = RLPF.ar(sig, cutoff.clip(261.62, 493.88), 0.3);
         Out.ar(0, Pan2.ar(sig, pan.clip(-1, 1), amp * env));
-    }).add;
+
+	}).add;
 
     SynthDef(\mobiusBass, { |freq = 55, amp = 0.25, cutoff = 250, gate = 1|
         var sig, sub, env;
@@ -50,14 +50,15 @@ s.waitForBoot {
     ~mobiusBass  = Synth(\mobiusBass, [\freq, 55, \amp, 0.25, \cutoff, 200]);
 
     ~mobiusEdgeRoutine = Routine({
-        var steps = 1200, dur = 0.08, bassEvery = 20;
+        var steps = 1500, dur = 0.01, bassEvery = 20;
         var u, pt, freq, pan, cutoff, bFreq;
 
-        (steps + 1).do { |i|
+       inf.do { |lap| 
+			steps.do { |i|
             u  = (i / steps) * 4pi;
             pt = ~mobiusPoint.value(u, 1);
 
-            freq = pt[2].linlin(-0.5, 0.5, 200, 1200)
+            freq = pt[2].linlin(-0.5, 0.5, 261.62, 493.88)
                  + pt[0].linlin(-1.5, 1.5, 0, 50);
             freq   = ~quantize.value(freq);
             pan    = pt[1].clip(-1, 1);
@@ -75,9 +76,16 @@ s.waitForBoot {
 
             dur.wait;
         };
-
+			
+	 };
+		
+    }).play;
+	};
+)
+(
+ ~mobiusEdgeRoutine.stop;
+        
         ~mobiusSynth.set(\gate, 0);
         ~mobiusBass.set(\gate, 0);
-    }).play;
-};
 )
+
